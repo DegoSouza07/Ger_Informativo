@@ -276,9 +276,10 @@ body{font-family:var(--fonte);background:#EAECF2;color:var(--texto);min-height:1
   font-size:12px;
   font-weight:600;
   padding:10px 14px;
-  margin-bottom:18px;
+  margin-bottom:14px;
   text-align:center;
 }
+.copy-hint strong { color:#0F2C59; }
 
 /* Code */
 .code-area{
@@ -311,16 +312,13 @@ body{font-family:var(--fonte);background:#EAECF2;color:var(--texto);min-height:1
   border-radius:8px;
   padding:8px;
   cursor:default;
-  background:#fff;
+  background:#EEF0F5;
   min-height:80px;
   transition:border-color .2s;
 }
 #prev-email:focus{
   border-color:#3B6CC5;
   box-shadow:0 0 0 3px rgba(59,108,197,.10);
-}
-#prev-email:focus-within{
-  border-color:#3B6CC5;
 }
 
 /* empty state */
@@ -966,184 +964,247 @@ function buildEmailHTML(){
   const ano  = document.getElementById("f-ano").value  || "2026";
   const data = fmtData(document.getElementById("f-data").value);
 
-  if(!decisoes.length) return "<p style='color:#888;font-family:Arial,sans-serif'>Adicione ao menos uma decisão.</p>";
+  if(!decisoes.length)
+    return "<p style='color:#6B7280;font-family:Arial,sans-serif;font-size:13px;padding:20px'>Adicione ao menos uma decisão.</p>";
 
   const colegiados = [...new Set(decisoes.map(d => d.colegiado).filter(Boolean))];
   const colBanner  = colegiados.length ? colegiados.join(" · ") : "";
+  const cards      = decisoes.map(buildEmailCard).join("");
 
-  const cards = decisoes.map(buildEmailCard).join("");
-
-  // Banner usando tabela — logo via URL pública para evitar base64 quebrado no Gmail
   return `
-<table width="640" cellpadding="0" cellspacing="0" border="0"
-       style="width:640px;max-width:640px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;border-collapse:collapse;">
+<style>
+@media screen and (max-width:600px){
+  .wrap{ width:100% !important; max-width:100% !important; }
+  .fc  { display:block !important; width:100% !important;
+         border-right:none !important;
+         border-bottom:1px solid rgba(255,255,255,0.12) !important; }
+  .fc:last-child{ border-bottom:none !important; }
+  .jname { font-size:24px !important; }
+  .banano{ font-size:18px !important; }
+}
+</style>
 
-  <!-- ── BANNER ── -->
-  <tr>
-    <td style="background:#0F2C59;padding:18px 24px;border-radius:10px 10px 0 0;">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-        <tr>
-          <!-- Logo -->
-          <td width="68" valign="middle" style="padding-right:18px;width:68px;">
-            <img src="${LOGO}" alt="TCE-PE" width="68" height="54"
-                 style="display:block;width:68px;height:54px;object-fit:contain;">
-          </td>
-          <!-- Divisor -->
-          <td width="1" valign="middle" style="width:1px;padding:0 0;">
-            <div style="width:1px;height:56px;background:rgba(255,255,255,0.25);display:block;"></div>
-          </td>
-          <!-- Título -->
-          <td valign="middle" style="padding-left:18px;">
-            <div style="font-family:Arial,sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,0.75);line-height:1;margin-bottom:3px;">Informativo de</div>
-            <div style="font-family:Georgia,'Times New Roman',serif;font-size:34px;font-weight:700;color:#FFFFFF;line-height:1;letter-spacing:-0.5px;">Julgamento</div>
-            <div style="font-family:Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:5px;">Diretoria de Julgamento</div>
-          </td>
-          <!-- Colegiado + Ano -->
-          <td valign="middle" align="right" style="padding-left:16px;white-space:nowrap;">
-            ${colBanner ? `<div style="font-family:Arial,sans-serif;font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#FFB100;line-height:1;">${esc(colBanner)}</div>` : ""}
-            <div style="font-family:Arial,sans-serif;font-size:22px;font-weight:800;color:#FFFFFF;line-height:1.2;">${esc(ano)}</div>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+  style="width:100%;border-collapse:collapse;background-color:#EEF0F5;mso-table-lspace:0;mso-table-rspace:0;">
+<tr>
+  <td align="center" style="padding:16px 8px;background-color:#EEF0F5;">
 
-  ${cards}
+    <table role="presentation" class="wrap" width="600" cellpadding="0" cellspacing="0" border="0"
+      style="width:600px;max-width:600px;border-collapse:collapse;
+             font-family:Arial,Helvetica,sans-serif;
+             mso-table-lspace:0;mso-table-rspace:0;">
 
-  <!-- ── RODAPÉ ── -->
-  <tr>
-    <td style="background:#0F2C59;padding:14px 24px;border-radius:0 0 10px 10px;border-top:1px solid rgba(255,255,255,0.08);">
-      <p style="margin:0;font-family:Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.75);text-align:center;line-height:1.7;">
-        <strong style="color:rgba(255,255,255,0.85);">Tribunal de Contas do Estado de Pernambuco — TCE-PE</strong><br>
-        Informativo de Julgamento nº ${esc(num)}/${esc(ano)}${data ? " · " + esc(data) : ""}<br>
-        <span style="color:rgba(255,255,255,0.4);">Este informativo tem caráter meramente informativo e não substitui o inteiro teor dos acórdãos.</span>
-      </p>
-    </td>
-  </tr>
+      <!-- ══ BANNER ══ -->
+      <tr>
+        <td style="background-color:#0F2C59;padding:16px 20px;border-radius:10px 10px 0 0;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+            style="border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;">
+            <tr>
+              <td width="72" valign="middle" style="width:72px;padding-right:14px;">
+                <img src="${LOGO}" alt="TCE-PE" width="68" height="54"
+                  style="display:block;width:68px;height:54px;object-fit:contain;border:0;" border="0">
+              </td>
+              <td width="1" style="width:1px;">
+                <div style="width:1px;height:54px;background-color:rgba(255,255,255,0.25);font-size:0;line-height:0;">&nbsp;</div>
+              </td>
+              <td valign="middle" style="padding-left:16px;">
+                <p style="margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:400;color:rgba(255,255,255,0.70);line-height:1;">Informativo de</p>
+                <p class="jname" style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:700;color:#FFFFFF;line-height:1;letter-spacing:-0.3px;">Julgamento</p>
+                <p style="margin:5px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:8px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.38);line-height:1;">Diretoria de Julgamento</p>
+              </td>
+              <td valign="middle" align="right" style="padding-left:8px;white-space:nowrap;">
+                ${colBanner ? `<p style="margin:0 0 3px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#FFB100;line-height:1;">${esc(colBanner)}</p>` : ""}
+                <p class="banano" style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:800;color:#FFFFFF;line-height:1.1;">${esc(ano)}</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
 
+      ${cards}
+
+      <!-- ══ RODAPÉ ══ -->
+      <tr>
+        <td style="background-color:#0F2C59;padding:14px 22px;border-top:1px solid rgba(255,255,255,0.08);border-radius:0 0 10px 10px;">
+          <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:10px;text-align:center;line-height:1.7;">
+            <strong style="color:#FFFFFF;">Tribunal de Contas do Estado de Pernambuco — TCE-PE</strong><br>
+            <span style="color:rgba(255,255,255,0.60);">Informativo de Julgamento nº ${esc(num)}/${esc(ano)}${data ? " · " + esc(data) : ""}</span><br>
+            <span style="color:rgba(255,255,255,0.35);font-size:9px;">Este informativo tem caráter meramente informativo e não substitui o inteiro teor dos acórdãos.</span>
+          </p>
+        </td>
+      </tr>
+
+    </table>
+  </td>
+</tr>
 </table>`;
 }
 
 function buildEmailCard(dec){
   const tesPreench = dec.teses.filter(t => t.trim());
+  const num  = document.getElementById("f-num").value || "1";
+  const data = fmtData(document.getElementById("f-data").value);
 
-  // ── META: colegiado + sessão ──
-  const metaHTML = (dec.colegiado || dec.sessao) ? `
+  /* ── BARRA DE INFO: "Informativo Nº X · data" + "Colegiado · Sessão" ── */
+  const infoBarHTML = `
   <tr>
-    <td style="background:#F4F6FA;padding:10px 24px;border-bottom:1px solid #E8ECF2;">
-      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+    <td style="background-color:#F4F6FA;padding:9px 20px;border-bottom:1px solid #E2E6EF;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+        style="border-collapse:collapse;">
         <tr>
-          ${dec.colegiado ? `
-          <td style="padding-right:16px;">
-            <div style="font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#9CA3AF;margin-bottom:2px;">Colegiado</div>
-            <div style="font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#1C2638;">${esc(dec.colegiado)}</div>
+          <!-- Esquerda: Informativo Nº X · data -->
+          <td valign="middle">
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;font-weight:600;color:#374151;line-height:1;">
+              📅&nbsp;<span style="color:#0F2C59;font-weight:700;">Informativo Nº ${esc(num)}</span>${data ? `&nbsp;·&nbsp;<span style="color:#6B7280;">${esc(data)}</span>` : ""}
+            </p>
           </td>
-          <td style="width:1px;background:#DDE1E7;padding:0 8px;">&nbsp;</td>` : ""}
-          ${dec.sessao ? `
-          <td style="padding-left:${dec.colegiado ? "16px" : "0"};">
-            <div style="font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#9CA3AF;margin-bottom:2px;">Sessão / Data</div>
-            <div style="font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#1C2638;">${esc(dec.sessao)}</div>
+          <!-- Direita: Colegiado · Sessão -->
+          ${(dec.colegiado || dec.sessao) ? `
+          <td valign="middle" align="right">
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:#6B7280;line-height:1;">
+              ${dec.colegiado ? `<span style="color:#0F2C59;font-weight:700;">✦&nbsp;${esc(dec.colegiado)}</span>` : ""}
+              ${dec.colegiado && dec.sessao ? "&nbsp;·&nbsp;" : ""}
+              ${dec.sessao ? esc(dec.sessao) : ""}
+            </p>
           </td>` : ""}
         </tr>
       </table>
     </td>
-  </tr>` : "";
+  </tr>`;
 
-  // ── DESTAQUE ──
+  /* ── DESTAQUE ── */
   const destaqueHTML = dec.destaque ? `
   <tr>
-    <td style="background:#FFFFFF;padding:18px 24px 20px;">
-      <div style="display:inline-block;background:#0F2C59;color:#FFFFFF;font-family:Arial,sans-serif;font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;padding:5px 14px;border-radius:5px;margin-bottom:12px;">Destaque</div>
-      <div style="background:#F0F3F8;border-radius:6px;padding:14px 16px;font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:700;line-height:1.55;color:#1C2638;">
-        ${esc(dec.destaque).replace(/\n/g,"<br>")}
+    <td style="background-color:#FFFFFF;padding:18px 20px 16px;">
+      <div style="display:inline-block;background-color:#0F2C59;color:#FFFFFF;
+                  font-family:Arial,sans-serif;font-size:9px;font-weight:800;
+                  letter-spacing:0.14em;text-transform:uppercase;
+                  padding:5px 13px;border-radius:4px;margin:0 0 12px 0;">Destaque</div>
+      <div style="background-color:#EEF1F8;border-radius:6px;padding:14px 16px;">
+        <span style="font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:700;
+                     line-height:1.55;color:#0F2C59;">${esc(dec.destaque).replace(/\n/g,"<br>")}</span>
       </div>
     </td>
   </tr>` : "";
 
-  // ── CASO ANALISADO ──
+  /* ── CASO ANALISADO ── */
   const casoHTML = dec.caso ? `
   <tr>
-    <td style="background:#FFFFFF;padding:12px 24px 14px;">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%"
-             style="border-collapse:collapse;border:1px solid #E8ECF2;border-left:4px solid #C0392B;border-radius:6px;background:#FFFFFF;">
+    <td style="background-color:#FFFFFF;padding:8px 20px 10px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+        style="border-collapse:collapse;border:1px solid #E8ECF2;
+               border-left:4px solid #C0392B;border-radius:6px;
+               background-color:#FFFFFF;mso-table-lspace:0;mso-table-rspace:0;">
         <tr>
-          <td width="56" valign="top" style="padding:14px 0 14px 14px;">
-            <div style="width:44px;height:44px;border-radius:50%;background:#C0392B;text-align:center;line-height:44px;font-size:20px;">🔍</div>
+          <td width="52" valign="top" style="padding:13px 0 13px 12px;width:52px;">
+            <div style="width:40px;height:40px;border-radius:50%;background-color:#C0392B;
+                        text-align:center;line-height:40px;font-size:18px;">🔍</div>
           </td>
-          <td valign="top" style="padding:14px 14px 14px 10px;">
-            <div style="font-family:Arial,sans-serif;font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#C0392B;margin-bottom:7px;">Caso Analisado</div>
-            <div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;">${esc(dec.caso).replace(/\n/g,"<br>")}</div>
+          <td valign="top" style="padding:13px 13px 13px 10px;">
+            <p style="margin:0 0 7px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;
+                      letter-spacing:0.14em;text-transform:uppercase;color:#C0392B;line-height:1;">Caso Analisado</p>
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;">${esc(dec.caso).replace(/\n/g,"<br>")}</p>
           </td>
         </tr>
       </table>
     </td>
   </tr>` : "";
 
-  // ── ENTENDIMENTO ──
+  /* ── ENTENDIMENTO ── */
   const entHTML = dec.entendimento ? `
   <tr>
-    <td style="background:#FFFFFF;padding:12px 24px 14px;">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%"
-             style="border-collapse:collapse;border:1px solid #E8ECF2;border-left:4px solid #0D7377;border-radius:6px;background:#FFFFFF;">
+    <td style="background-color:#FFFFFF;padding:8px 20px 10px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+        style="border-collapse:collapse;border:1px solid #E8ECF2;
+               border-left:4px solid #0D7377;border-radius:6px;
+               background-color:#FFFFFF;mso-table-lspace:0;mso-table-rspace:0;">
         <tr>
-          <td width="56" valign="top" style="padding:14px 0 14px 14px;">
-            <div style="width:44px;height:44px;border-radius:50%;background:#0D7377;text-align:center;line-height:44px;font-size:20px;">👥</div>
+          <td width="52" valign="top" style="padding:13px 0 13px 12px;width:52px;">
+            <div style="width:40px;height:40px;border-radius:50%;background-color:#0D7377;
+                        text-align:center;line-height:40px;font-size:18px;">👥</div>
           </td>
-          <td valign="top" style="padding:14px 14px 14px 10px;">
-            <div style="font-family:Arial,sans-serif;font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#0D7377;margin-bottom:7px;">Entendimento do Colegiado</div>
-            <div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;">${esc(dec.entendimento).replace(/\n/g,"<br>")}</div>
+          <td valign="top" style="padding:13px 13px 13px 10px;">
+            <p style="margin:0 0 7px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;
+                      letter-spacing:0.14em;text-transform:uppercase;color:#0D7377;line-height:1;">Entendimento do Colegiado</p>
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;">${esc(dec.entendimento).replace(/\n/g,"<br>")}</p>
           </td>
         </tr>
       </table>
     </td>
   </tr>` : "";
 
-  // ── TESES (opcional) ──
+  /* ── TESES ── */
   const tesHTML = tesPreench.length ? `
   <tr>
-    <td style="background:#F7F9FC;padding:14px 24px;border-top:1px solid #E9EBF0;">
-      <div style="font-family:Arial,sans-serif;font-size:9px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#0F2C59;margin-bottom:10px;">&#9679; Teses Fixadas</div>
+    <td style="background-color:#F7F9FC;padding:14px 20px;border-top:1px solid #E9EBF0;">
+      <p style="margin:0 0 10px;font-family:Arial,sans-serif;font-size:8px;font-weight:800;
+                letter-spacing:0.14em;text-transform:uppercase;color:#0F2C59;">&#9679; Teses Fixadas</p>
       ${tesPreench.map((t,i) => `
-      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-bottom:8px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+        style="border-collapse:collapse;margin:0 0 8px;mso-table-lspace:0;mso-table-rspace:0;">
         <tr>
-          <td width="24" valign="top" style="padding-right:8px;">
-            <div style="width:20px;height:20px;border-radius:50%;background:#0F2C59;text-align:center;line-height:20px;font-family:Arial,sans-serif;font-size:9px;font-weight:900;color:#FFB100;">${i+1}</div>
+          <td width="24" valign="top" style="width:24px;padding-right:9px;">
+            <div style="width:20px;height:20px;border-radius:50%;background-color:#0F2C59;
+                        text-align:center;line-height:20px;font-family:Arial,sans-serif;
+                        font-size:9px;font-weight:900;color:#FFB100;">${i+1}</div>
           </td>
-          <td valign="top" style="font-family:Arial,sans-serif;font-size:13px;line-height:1.65;color:#374151;">${esc(t)}</td>
+          <td valign="top">
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.65;color:#374151;">${esc(t)}</p>
+          </td>
         </tr>
       </table>`).join("")}
     </td>
   </tr>` : "";
 
-  // ── RODAPÉ DO CARTÃO: 3 colunas ──
-  const procVal  = dec.processo ? (dec.linkTid ? `<a href="${esc(dec.linkTid)}" style="color:#FFFFFF;text-decoration:underline;">${esc(dec.processo)}</a>` : esc(dec.processo)) : `<span style="color:rgba(255,255,255,0.3);">—</span>`;
-  const acordVal = dec.acordao ? (dec.linkAcordao ? `<a href="${esc(dec.linkAcordao)}" style="color:#FFFFFF;text-decoration:underline;">${esc(dec.acordao)}</a>` : esc(dec.acordao)) : `<span style="color:rgba(255,255,255,0.3);">—</span>`;
-  const relVal   = dec.relator ? esc(dec.relator) : `<span style="color:rgba(255,255,255,0.3);">—</span>`;
+  /* ── RODAPÉ DO CARTÃO: 3 colunas ── */
+  const procVal = dec.processo
+    ? (dec.linkTid
+        ? `<a href="${esc(dec.linkTid)}" style="color:#FFFFFF;text-decoration:underline;">${esc(dec.processo)}</a>`
+        : `<span style="color:#FFFFFF;">${esc(dec.processo)}</span>`)
+    : `<span style="color:rgba(255,255,255,0.30);">—</span>`;
+
+  const acordVal = dec.acordao
+    ? (dec.linkAcordao
+        ? `<a href="${esc(dec.linkAcordao)}" style="color:#FFFFFF;text-decoration:underline;">${esc(dec.acordao)}</a>`
+        : `<span style="color:#FFFFFF;">${esc(dec.acordao)}</span>`)
+    : `<span style="color:rgba(255,255,255,0.30);">—</span>`;
+
+  const relVal = dec.relator
+    ? `<span style="color:#FFFFFF;">${esc(dec.relator)}</span>`
+    : `<span style="color:rgba(255,255,255,0.30);">—</span>`;
 
   const footHTML = `
   <tr>
-    <td style="background:#0F2C59;padding:0;">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+    <td style="background-color:#0F2C59;padding:0;border-top:1px solid rgba(255,255,255,0.10);">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+        style="border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;">
         <tr>
-          <td width="33%" style="padding:13px 20px;border-right:1px solid rgba(255,255,255,0.12);">
-            <div style="font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Processo</div>
-            <div style="font-family:Arial,sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;">${procVal}</div>
+          <td class="fc" width="33%" style="padding:12px 16px;border-right:1px solid rgba(255,255,255,0.12);vertical-align:top;">
+            <p style="margin:0 0 3px;font-family:Arial,sans-serif;font-size:7.5px;font-weight:700;
+                      letter-spacing:0.14em;text-transform:uppercase;
+                      color:rgba(255,255,255,0.45);line-height:1;">Processo</p>
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:12px;font-weight:600;">${procVal}</p>
           </td>
-          <td width="33%" style="padding:13px 20px;border-right:1px solid rgba(255,255,255,0.12);">
-            <div style="font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Acórdão</div>
-            <div style="font-family:Arial,sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;">${acordVal}</div>
+          <td class="fc" width="33%" style="padding:12px 16px;border-right:1px solid rgba(255,255,255,0.12);vertical-align:top;">
+            <p style="margin:0 0 3px;font-family:Arial,sans-serif;font-size:7.5px;font-weight:700;
+                      letter-spacing:0.14em;text-transform:uppercase;
+                      color:rgba(255,255,255,0.45);line-height:1;">Acórdão</p>
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:12px;font-weight:600;">${acordVal}</p>
           </td>
-          <td width="33%" style="padding:13px 20px;">
-            <div style="font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Relator</div>
-            <div style="font-family:Arial,sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;">${relVal}</div>
+          <td class="fc" width="33%" style="padding:12px 16px;vertical-align:top;">
+            <p style="margin:0 0 3px;font-family:Arial,sans-serif;font-size:7.5px;font-weight:700;
+                      letter-spacing:0.14em;text-transform:uppercase;
+                      color:rgba(255,255,255,0.45);line-height:1;">Relator</p>
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:12px;font-weight:600;">${relVal}</p>
           </td>
         </tr>
       </table>
     </td>
   </tr>`;
 
-  return metaHTML + destaqueHTML + casoHTML + entHTML + tesHTML + footHTML;
+  return infoBarHTML + destaqueHTML + casoHTML + entHTML + tesHTML + footHTML;
 }
+
 
 function buildHTML(){
   const num   = document.getElementById("f-num").value || "1";
