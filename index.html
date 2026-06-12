@@ -453,6 +453,7 @@ body{font-family:var(--fonte);background:#EAECF2;color:var(--texto);min-height:1
   background:#F0F3F8;
   border-radius:6px;
   padding:14px 18px;
+  text-align:justify;
   font-family:var(--fonte-serif);
   font-size:15.5px;font-weight:700;
   line-height:1.55;
@@ -500,7 +501,7 @@ body{font-family:var(--fonte);background:#EAECF2;color:var(--texto);min-height:1
 .inf-sec-label.caso{ color:#C0392B }
 .inf-sec-label.ent{ color:#0D7377 }
 .inf-sec-text{
-  font-size:13.5px;line-height:1.72;color:#374151;
+  font-size:13.5px;line-height:1.72;color:#374151;text-align:justify;
 }
 
 /* ── TESES ── */
@@ -530,7 +531,7 @@ body{font-family:var(--fonte);background:#EAECF2;color:var(--texto);min-height:1
   display:flex;align-items:center;justify-content:center;
   margin-top:3px;
 }
-.inf-tese-text{font-size:13px;line-height:1.65;color:#374151}
+.inf-tese-text{font-size:13px;line-height:1.65;color:#374151;text-align:justify}
 
 /* ── RODAPÉ DO CARTÃO: azul escuro, 3 colunas ── */
 .inf-card-foot{
@@ -1082,7 +1083,7 @@ function buildEmailCard(dec){
                   padding:5px 13px;border-radius:4px;margin:0 0 12px 0;">Destaque</div>
       <div style="background-color:#EEF1F8;border-radius:6px;padding:14px 16px;">
         <span style="font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:700;
-                     line-height:1.55;color:#0F2C59;">${esc(dec.destaque).replace(/\n/g,"<br>")}</span>
+                     line-height:1.55;color:#0F2C59;text-align:justify;">${esc(dec.destaque).replace(/\n/g,"<br>")}</span>
       </div>
     </td>
   </tr>` : "";
@@ -1103,7 +1104,7 @@ function buildEmailCard(dec){
           <td valign="top" style="padding:13px 13px 13px 10px;">
             <p style="margin:0 0 7px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;
                       letter-spacing:0.14em;text-transform:uppercase;color:#C0392B;line-height:1;">Caso Analisado</p>
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;">${esc(dec.caso).replace(/\n/g,"<br>")}</p>
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;text-align:justify;">${esc(dec.caso).replace(/\n/g,"<br>")}</p>
           </td>
         </tr>
       </table>
@@ -1126,7 +1127,7 @@ function buildEmailCard(dec){
           <td valign="top" style="padding:13px 13px 13px 10px;">
             <p style="margin:0 0 7px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;
                       letter-spacing:0.14em;text-transform:uppercase;color:#0D7377;line-height:1;">Entendimento do Colegiado</p>
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;">${esc(dec.entendimento).replace(/\n/g,"<br>")}</p>
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;text-align:justify;">${esc(dec.entendimento).replace(/\n/g,"<br>")}</p>
           </td>
         </tr>
       </table>
@@ -1149,7 +1150,7 @@ function buildEmailCard(dec){
                         font-size:9px;font-weight:900;color:#FFB100;">${i+1}</div>
           </td>
           <td valign="top">
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.65;color:#374151;">${esc(t)}</p>
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.65;color:#374151;text-align:justify;">${esc(t)}</p>
           </td>
         </tr>
       </table>`).join("")}
