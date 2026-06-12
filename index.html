@@ -1088,9 +1088,9 @@ function buildEmailCard(dec){
                   font-family:Arial,sans-serif;font-size:9px;font-weight:800;
                   letter-spacing:0.14em;text-transform:uppercase;
                   padding:5px 13px;border-radius:4px;margin:0 0 12px 0;">Destaque</div>
-      <div style="background-color:#EEF1F8;border-radius:6px;padding:14px 16px;">
+      <div style="background-color:#EEF1F8;border-radius:6px;padding:14px 16px;text-align:justify;">
         <span style="font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:700;
-                     line-height:1.55;color:#0F2C59;text-align:justify;hyphens:auto;word-break:break-word;overflow-wrap:break-word;">${esc(dec.destaque).replace(/\n/g,"<br>")}</span>
+                     line-height:1.55;color:#0F2C59;text-align:justify;word-break:break-word;">${esc(dec.destaque).replace(/\n/g,"<br>")}</span>
       </div>
     </td>
   </tr>` : "";
@@ -1108,10 +1108,10 @@ function buildEmailCard(dec){
             <div style="width:40px;height:40px;border-radius:50%;background-color:#C0392B;
                         text-align:center;line-height:40px;font-size:18px;">🔍</div>
           </td>
-          <td valign="top" style="padding:13px 13px 13px 10px;">
-            <p style="margin:0 0 7px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;
-                      letter-spacing:0.14em;text-transform:uppercase;color:#C0392B;line-height:1;">Caso Analisado</p>
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;text-align:justify;hyphens:auto;word-break:break-word;overflow-wrap:break-word;">${esc(dec.caso).replace(/\n/g,"<br>")}</p>
+          <td valign="top" style="padding:13px 13px 13px 10px;text-align:justify;">
+            <div style="margin:0 0 7px 0;font-family:Arial,sans-serif;font-size:9px;font-weight:800;
+                      letter-spacing:0.14em;text-transform:uppercase;color:#C0392B;line-height:1;text-align:left;">Caso Analisado</div>
+            <div style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;text-align:justify;word-break:break-word;">${esc(dec.caso).replace(/\n/g,"<br>")}</div>
           </td>
         </tr>
       </table>
@@ -1131,10 +1131,10 @@ function buildEmailCard(dec){
             <div style="width:40px;height:40px;border-radius:50%;background-color:#0D7377;
                         text-align:center;line-height:40px;font-size:18px;">👥</div>
           </td>
-          <td valign="top" style="padding:13px 13px 13px 10px;">
-            <p style="margin:0 0 7px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;
-                      letter-spacing:0.14em;text-transform:uppercase;color:#0D7377;line-height:1;">Entendimento do Colegiado</p>
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;text-align:justify;hyphens:auto;word-break:break-word;overflow-wrap:break-word;">${esc(dec.entendimento).replace(/\n/g,"<br>")}</p>
+          <td valign="top" style="padding:13px 13px 13px 10px;text-align:justify;">
+            <div style="margin:0 0 7px 0;font-family:Arial,sans-serif;font-size:9px;font-weight:800;
+                      letter-spacing:0.14em;text-transform:uppercase;color:#0D7377;line-height:1;text-align:left;">Entendimento do Colegiado</div>
+            <div style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.7;color:#374151;text-align:justify;word-break:break-word;">${esc(dec.entendimento).replace(/\n/g,"<br>")}</div>
           </td>
         </tr>
       </table>
@@ -1156,8 +1156,8 @@ function buildEmailCard(dec){
                         text-align:center;line-height:20px;font-family:Arial,sans-serif;
                         font-size:9px;font-weight:900;color:#FFB100;">${i+1}</div>
           </td>
-          <td valign="top">
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;line-height:1.65;color:#374151;text-align:justify;hyphens:auto;word-break:break-word;overflow-wrap:break-word;">${esc(t)}</p>
+          <td valign="top" style="text-align:justify;">
+            <div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.65;color:#374151;text-align:justify;word-break:break-word;">${esc(t)}</div>
           </td>
         </tr>
       </table>`).join("")}
