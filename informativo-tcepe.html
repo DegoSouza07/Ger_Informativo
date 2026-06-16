@@ -1271,162 +1271,218 @@ function buildCard(dec){
   const data = fmtData(document.getElementById("f-data").value);
   const tesPreench = dec.teses.filter(t => t.trim());
 
-  /* ── SVGs inline ── */
-  const SVG_LUPA = `<svg viewBox="0 0 24 24" width="20" height="20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>`;
-  const SVG_GRP  = `<svg viewBox="0 0 24 24" width="20" height="20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>`;
-  const SVG_SCALE= `<svg viewBox="0 0 24 24" width="20" height="20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M17 2H7C5.9 2 5 2.9 5 4v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm8 8h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2z"/></svg>`;
-  const SVG_DOC  = `<svg viewBox="0 0 24 24" width="18" height="18" fill="rgba(255,255,255,0.55)" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6zm2-5h8v1.5H8V15zm0-3h8v1.5H8V12zm0-3h4v1.5H8V9z"/></svg>`;
-  const SVG_CAL  = `<svg viewBox="0 0 24 24" width="18" height="18" fill="rgba(255,255,255,0.55)" xmlns="http://www.w3.org/2000/svg"><path d="M17 2h-1V1h-1.5v1h-5V1H8v1H7C5.35 2 4 3.35 4 5v14c0 1.65 1.35 3 3 3h10c1.65 0 3-1.35 3-3V5c0-1.65-1.35-3-3-3zm1.5 17c0 .83-.67 1.5-1.5 1.5H7c-.83 0-1.5-.67-1.5-1.5V9h13v10zM5.5 7.5V5c0-.83.67-1.5 1.5-1.5h1V5H9V3.5h6V5h1.5V3.5H18c.83 0 1.5.67 1.5 1.5v2.5h-14z"/></svg>`;
-  const SVG_USR  = `<svg viewBox="0 0 24 24" width="18" height="18" fill="rgba(255,255,255,0.55)" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>`;
-  const ICO_CAL  = `<svg viewBox="0 0 24 24" width="13" height="13" fill="#E07000" xmlns="http://www.w3.org/2000/svg"><path d="M17 2h-1V1h-1.5v1h-5V1H8v1H7C5.35 2 4 3.35 4 5v14c0 1.65 1.35 3 3 3h10c1.65 0 3-1.35 3-3V5c0-1.65-1.35-3-3-3zm1.5 17c0 .83-.67 1.5-1.5 1.5H7c-.83 0-1.5-.67-1.5-1.5V9h13v10zM5.5 7.5V5c0-.83.67-1.5 1.5-1.5h1V5H9V3.5h6V5h1.5V3.5H18c.83 0 1.5.67 1.5 1.5v2.5h-14z"/></svg>`;
-  const ICO_BOLT = `<svg viewBox="0 0 24 24" width="13" height="13" fill="#E8A000" xmlns="http://www.w3.org/2000/svg"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>`;
-
-  /* ── BARRA INFO ── */
+  /* ────────────────────────────────────────────────
+     BARRA INFO — fundo branco, ícones coloridos
+     Esquerda: 🗓 laranja · "Informativo  Nº X · data"
+     Direita:  ⚡ amarelo · "Colegiado · Sessão"
+  ──────────────────────────────────────────────── */
   const infoBar = `
-  <div style="background:#fff;border-bottom:1px solid #E8ECF2;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    <span style="display:inline-flex;align-items:center;gap:5px;font-family:Arial,Helvetica,sans-serif;font-size:11.5px;color:#4B5563;">
-      ${ICO_CAL}
-      <span style="color:#374151;font-weight:600;">Informativo&nbsp;Nº&nbsp;${esc(num)}</span>
-      ${data ? `<span style="color:#9CA3AF;">·</span><span style="color:#6B7280;">${esc(data)}</span>` : ""}
+  <div style="background:#FFFFFF;border-bottom:1px solid #E5E7EB;
+              padding:10px 20px;display:flex;align-items:center;
+              justify-content:space-between;flex-wrap:wrap;gap:6px;">
+    <span style="display:inline-flex;align-items:center;gap:6px;
+                 font-family:Arial,sans-serif;font-size:12px;color:#4B5563;">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="#E07000"><path d="M17 2h-1V1h-1.5v1h-5V1H8v1H7C5.35 2 4 3.35 4 5v14c0 1.65 1.35 3 3 3h10c1.65 0 3-1.35 3-3V5c0-1.65-1.35-3-3-3zm1.5 17c0 .83-.67 1.5-1.5 1.5H7c-.83 0-1.5-.67-1.5-1.5V9h13v10z"/></svg>
+      <span><strong style="color:#1F2937;font-weight:700;">Informativo&nbsp;&nbsp;Nº&nbsp;${esc(num)}</strong>${data ? `<span style="color:#9CA3AF;">&nbsp;·&nbsp;</span><span style="color:#6B7280;">${esc(data)}</span>` : ""}</span>
     </span>
     ${(dec.colegiado||dec.sessao) ? `
-    <span style="display:inline-flex;align-items:center;gap:5px;font-family:Arial,Helvetica,sans-serif;font-size:11.5px;color:#6B7280;">
-      ${ICO_BOLT}
-      ${dec.colegiado ? `<span style="color:#374151;font-weight:600;">${esc(dec.colegiado)}</span>` : ""}
+    <span style="display:inline-flex;align-items:center;gap:6px;
+                 font-family:Arial,sans-serif;font-size:12px;color:#6B7280;">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="#D4A017"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+      ${dec.colegiado ? `<strong style="color:#1F2937;font-weight:700;">${esc(dec.colegiado)}</strong>` : ""}
       ${dec.colegiado && dec.sessao ? `<span style="color:#9CA3AF;">·</span>` : ""}
       ${dec.sessao ? `<span>${esc(dec.sessao)}</span>` : ""}
     </span>` : ""}
   </div>`;
 
-  /* ── DESTAQUE ── */
+  /* ────────────────────────────────────────────────
+     DESTAQUE
+     Badge: retângulo azul escuro #0F2C59 texto branco
+     Caixa: fundo #F3F4F6 cinza claro, texto preto bold
+             fonte: Inter/Arial bold, tamanho 15px
+             border-radius 6px, padding generoso
+             SEM borda colorida
+  ──────────────────────────────────────────────── */
   const destaqueHTML = dec.destaque ? `
-  <div style="background:#FFFFFF;padding:18px 22px 20px;">
-    <div style="display:inline-block;background:#0F2C59;color:#fff;
-                font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:800;
-                letter-spacing:.16em;text-transform:uppercase;
-                padding:5px 13px;border-radius:4px;margin-bottom:14px;">Destaque</div>
-    <div style="background:#F0F3F8;border-radius:6px;padding:16px 18px;
-                font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:700;
-                line-height:1.6;color:#1C2638;
+  <div style="background:#FFFFFF;padding:20px 22px 22px;">
+    <div style="display:inline-flex;align-items:center;
+                background:#0F2C59;border-radius:5px;
+                padding:5px 14px;margin-bottom:14px;">
+      <span style="font-family:Arial,sans-serif;font-size:9.5px;font-weight:800;
+                   letter-spacing:.15em;text-transform:uppercase;color:#FFFFFF;">Destaque</span>
+    </div>
+    <div style="background:#F3F4F6;border-radius:6px;padding:16px 20px;">
+      <p style="margin:0;font-family:Arial,sans-serif;font-size:14.5px;font-weight:700;
+                line-height:1.65;color:#111827;
                 text-align:justify;hyphens:auto;word-break:break-word;">
-      ${esc(dec.destaque).replace(/\n/g,"<br>")}
+        ${esc(dec.destaque).replace(/\n/g,"<br>")}
+      </p>
     </div>
   </div>` : "";
 
-  /* ── CASO ANALISADO ── */
+  /* ────────────────────────────────────────────────
+     CASO ANALISADO
+     Card branco com borda-esq vermelha escura #B91C1C (4px)
+     Ícone: círculo vermelho escuro #B91C1C, lupa branca 44px
+     Label: "CASO ANALISADO" vermelho #C0392B bold 10px uppercase
+     Texto: Arial 13.5px regular justify, cor #374151
+     Espaço generoso entre ícone e texto
+  ──────────────────────────────────────────────── */
   const casoHTML = dec.caso ? `
-  <div style="padding:12px 22px 14px;background:#fff;">
-    <div style="border:1px solid #E8ECF2;border-left:4px solid #C0392B;border-radius:6px;
-                background:#fff;overflow:hidden;">
-      <div style="display:flex;align-items:flex-start;gap:14px;padding:16px 18px;">
-        <div style="flex-shrink:0;width:44px;height:44px;border-radius:50%;
-                    background:#C0392B;display:flex;align-items:center;justify-content:center;">
-          ${SVG_LUPA}
+  <div style="padding:0 22px 20px;background:#FFFFFF;">
+    <div style="border:1px solid #E5E7EB;border-left:4px solid #B91C1C;
+                border-radius:6px;background:#FFFFFF;overflow:hidden;">
+      <div style="display:flex;align-items:flex-start;gap:16px;padding:18px 20px;">
+        <div style="flex-shrink:0;width:46px;height:46px;border-radius:50%;
+                    background:#C0392B;
+                    display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="#FFFFFF"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </div>
-        <div style="flex:1;">
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:800;
-                      letter-spacing:.16em;text-transform:uppercase;
-                      color:#C0392B;margin-bottom:9px;">Caso Analisado</div>
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;line-height:1.72;
-                      color:#374151;text-align:justify;hyphens:auto;word-break:break-word;">
+        <div style="flex:1;min-width:0;">
+          <p style="margin:0 0 8px;font-family:Arial,sans-serif;font-size:10px;font-weight:800;
+                    letter-spacing:.14em;text-transform:uppercase;color:#C0392B;line-height:1;">
+            Caso Analisado
+          </p>
+          <p style="margin:0;font-family:Arial,sans-serif;font-size:13.5px;font-weight:400;
+                    line-height:1.72;color:#374151;
+                    text-align:justify;hyphens:auto;word-break:break-word;">
             ${esc(dec.caso).replace(/\n/g,"<br>")}
-          </div>
+          </p>
         </div>
       </div>
     </div>
   </div>` : "";
 
-  /* ── ENTENDIMENTO DO COLEGIADO ── */
+  /* ────────────────────────────────────────────────
+     ENTENDIMENTO DO COLEGIADO
+     Card branco com borda-esq teal #0F766E (4px)
+     Ícone: círculo teal #0F766E, grupo/pessoas branco 44px
+     Label: "ENTENDIMENTO DO COLEGIADO" teal #0D7377 bold
+     Texto: igual ao Caso Analisado
+  ──────────────────────────────────────────────── */
   const entHTML = dec.entendimento ? `
-  <div style="padding:12px 22px 14px;background:#fff;">
-    <div style="border:1px solid #E8ECF2;border-left:4px solid #0D7377;border-radius:6px;
-                background:#fff;overflow:hidden;">
-      <div style="display:flex;align-items:flex-start;gap:14px;padding:16px 18px;">
-        <div style="flex-shrink:0;width:44px;height:44px;border-radius:50%;
-                    background:#0D7377;display:flex;align-items:center;justify-content:center;">
-          ${SVG_GRP}
+  <div style="padding:0 22px 20px;background:#FFFFFF;">
+    <div style="border:1px solid #E5E7EB;border-left:4px solid #0F766E;
+                border-radius:6px;background:#FFFFFF;overflow:hidden;">
+      <div style="display:flex;align-items:flex-start;gap:16px;padding:18px 20px;">
+        <div style="flex-shrink:0;width:46px;height:46px;border-radius:50%;
+                    background:#0D7377;
+                    display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="#FFFFFF"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
         </div>
-        <div style="flex:1;">
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:800;
-                      letter-spacing:.16em;text-transform:uppercase;
-                      color:#0D7377;margin-bottom:9px;">Entendimento do Colegiado</div>
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;line-height:1.72;
-                      color:#374151;text-align:justify;hyphens:auto;word-break:break-word;">
+        <div style="flex:1;min-width:0;">
+          <p style="margin:0 0 8px;font-family:Arial,sans-serif;font-size:10px;font-weight:800;
+                    letter-spacing:.14em;text-transform:uppercase;color:#0D7377;line-height:1;">
+            Entendimento do Colegiado
+          </p>
+          <p style="margin:0;font-family:Arial,sans-serif;font-size:13.5px;font-weight:400;
+                    line-height:1.72;color:#374151;
+                    text-align:justify;hyphens:auto;word-break:break-word;">
             ${esc(dec.entendimento).replace(/\n/g,"<br>")}
-          </div>
+          </p>
         </div>
       </div>
     </div>
   </div>` : "";
 
-  /* ── TESES FIXADAS ── */
+  /* ────────────────────────────────────────────────
+     TESES FIXADAS
+     Fundo seção: branco, separado por espaço
+     Header: ícone balança em círculo #F5E6C0 (borda #D4A017),
+             ícone SVG balança cor #D4A017
+             "TESES FIXADAS" Arial 15px bold #1F2937
+     Cards: fundo #FDF6E3 (creme), borda 1px #E8D5A3,
+            borda-esq 4px #D4A017, radius 6px
+     Badge número: círculo #D4A017, texto branco, 28px
+     Texto: Arial 13.5px regular justify #374151
+     Gap entre cards: 12px
+  ──────────────────────────────────────────────── */
   const tesHTML = tesPreench.length ? `
-  <div style="padding:20px 22px 22px;background:#FFFFFF;border-top:2px solid #F0E8D0;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-      <div style="width:46px;height:46px;border-radius:50%;background:#F5E6C0;
-                  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-                  border:2px solid #D4A017;">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="#D4A017" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L1 9l4 2.18V16h2v-3.82L9 13.4V17c0 1.66 1.34 3 3 3s3-1.34 3-3v-3.6l2-1.09V16h2v-4.82L21 9 12 3zm0 2.27L18.18 9 12 12.44 5.82 9 12 5.27zM15 17c0 1.1-.9 2-2 2h-2c-1.1 0-2-.9-2-2v-2.28l3 1.63 3-1.63V17z"/></svg>
+  <div style="padding:8px 22px 24px;background:#FFFFFF;margin-top:4px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="flex-shrink:0;width:48px;height:48px;border-radius:50%;
+                  background:#F5E6C0;border:2px solid #D4A017;
+                  display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="#D4A017"><path d="M17.43 10c-.08-.37-.44-.62-.81-.62H13.5l1-4.38c.1-.38-.06-.78-.41-.97-.36-.18-.79-.08-1.03.24L7 12H3.57c-.37 0-.73.25-.81.62l-1 5c-.05.22.01.45.17.62.15.16.37.26.6.26h17.94c.23 0 .45-.1.6-.26.16-.17.22-.4.17-.62l-1-5zM12.23 6.6L11.5 9.62H9.5l2.73-3.02zM4.1 17l.8-4H12l-1 4H4.1zm8.9 0l1-4h5.9l.8 4H13z"/></svg>
       </div>
-      <span style="font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:900;
-                   letter-spacing:.08em;text-transform:uppercase;color:#1C2638;">Teses Fixadas</span>
+      <span style="font-family:Arial,sans-serif;font-size:15px;font-weight:800;
+                   letter-spacing:.06em;text-transform:uppercase;color:#1F2937;">Teses Fixadas</span>
     </div>
-    <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
       ${tesPreench.map((t,i) => `
       <div style="display:flex;gap:14px;align-items:flex-start;
-                  background:#FDF6E3;border:1px solid #EDD99A;
-                  border-left:5px solid #D4A017;border-radius:8px;padding:14px 18px;">
-        <div style="flex-shrink:0;width:30px;height:30px;border-radius:50%;
-                    background:#D4A017;color:#fff;
-                    font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:900;
-                    display:flex;align-items:center;justify-content:center;margin-top:1px;">
-          ${i+1}
+                  background:#FDF6E3;
+                  border:1px solid #E8D5A3;
+                  border-left:4px solid #D4A017;
+                  border-radius:6px;
+                  padding:14px 16px;">
+        <div style="flex-shrink:0;width:28px;height:28px;border-radius:50%;
+                    background:#D4A017;
+                    display:flex;align-items:center;justify-content:center;
+                    margin-top:1px;">
+          <span style="font-family:Arial,sans-serif;font-size:12px;font-weight:900;color:#FFFFFF;line-height:1;">${i+1}</span>
         </div>
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;line-height:1.72;
-                    color:#374151;text-align:justify;hyphens:auto;word-break:break-word;flex:1;">
+        <p style="margin:0;flex:1;font-family:Arial,sans-serif;font-size:13.5px;font-weight:400;
+                  line-height:1.72;color:#374151;
+                  text-align:justify;hyphens:auto;word-break:break-word;">
           ${esc(t)}
-        </div>
+        </p>
       </div>`).join("")}
     </div>
   </div>` : "";
 
-  /* ── RODAPÉ: 3 colunas ── */
+  /* ────────────────────────────────────────────────
+     RODAPÉ DO CARTÃO
+     Fundo: #0F2C59 azul escuro
+     3 colunas iguais separadas por linha rgba(255,255,255,.15)
+     Cada coluna: ícone SVG rgba(255,255,255,.55) + label 8px uppercase + valor 13px bold branco
+  ──────────────────────────────────────────────── */
   const procVal  = dec.processo
-    ? (dec.linkTid ? `<a href="${esc(dec.linkTid)}" style="color:#fff;text-decoration:underline;" target="_blank">${esc(dec.processo)}</a>` : `<span style="color:#fff;">${esc(dec.processo)}</span>`)
+    ? (dec.linkTid
+        ? `<a href="${esc(dec.linkTid)}" target="_blank" style="color:#FFFFFF;text-decoration:none;font-weight:700;">${esc(dec.processo)}</a>`
+        : `<span style="color:#FFFFFF;font-weight:700;">${esc(dec.processo)}</span>`)
     : `<span style="color:rgba(255,255,255,.3);">—</span>`;
   const acordVal = dec.acordao
-    ? (dec.linkAcordao ? `<a href="${esc(dec.linkAcordao)}" style="color:#fff;text-decoration:underline;" target="_blank">${esc(dec.acordao)}</a>` : `<span style="color:#fff;">${esc(dec.acordao)}</span>`)
+    ? (dec.linkAcordao
+        ? `<a href="${esc(dec.linkAcordao)}" target="_blank" style="color:#FFFFFF;text-decoration:none;font-weight:700;">${esc(dec.acordao)}</a>`
+        : `<span style="color:#FFFFFF;font-weight:700;">${esc(dec.acordao)}</span>`)
     : `<span style="color:rgba(255,255,255,.3);">—</span>`;
-  const relVal   = dec.relator ? `<span style="color:#fff;">${esc(dec.relator)}</span>` : `<span style="color:rgba(255,255,255,.3);">—</span>`;
+  const relVal = dec.relator
+    ? `<span style="color:#FFFFFF;font-weight:700;">${esc(dec.relator)}</span>`
+    : `<span style="color:rgba(255,255,255,.3);">—</span>`;
 
   const footHTML = `
-  <div style="background:#0F2C59;display:flex;align-items:stretch;">
-    <div style="flex:1;padding:14px 20px;border-right:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:10px;">
-      <div style="flex-shrink:0;">${SVG_DOC}</div>
+  <div style="background:#0F2C59;display:flex;align-items:stretch;border-top:1px solid rgba(255,255,255,.08);">
+    <div style="flex:1;padding:14px 18px;border-right:1px solid rgba(255,255,255,.15);
+                display:flex;align-items:center;gap:10px;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="rgba(255,255,255,.5)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6zm2-4h8v1.5H8V16zm0-3h8v1.5H8V13zm0-3h4v1.5H8V10z"/></svg>
       <div>
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:7.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px;">Processo</div>
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:12.5px;font-weight:700;">${procVal}</div>
+        <div style="font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;
+                    text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px;">Processo</div>
+        <div style="font-family:Arial,sans-serif;font-size:13px;">${procVal}</div>
       </div>
     </div>
-    <div style="flex:1;padding:14px 20px;border-right:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:10px;">
-      <div style="flex-shrink:0;">${SVG_CAL}</div>
+    <div style="flex:1;padding:14px 18px;border-right:1px solid rgba(255,255,255,.15);
+                display:flex;align-items:center;gap:10px;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="rgba(255,255,255,.5)"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
       <div>
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:7.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px;">Acórdão</div>
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:12.5px;font-weight:700;">${acordVal}</div>
+        <div style="font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;
+                    text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px;">Acórdão</div>
+        <div style="font-family:Arial,sans-serif;font-size:13px;">${acordVal}</div>
       </div>
     </div>
-    <div style="flex:1;padding:14px 20px;display:flex;align-items:center;gap:10px;">
-      <div style="flex-shrink:0;">${SVG_USR}</div>
+    <div style="flex:1;padding:14px 18px;display:flex;align-items:center;gap:10px;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="rgba(255,255,255,.5)"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
       <div>
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:7.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px;">Relator</div>
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:12.5px;font-weight:700;">${relVal}</div>
+        <div style="font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;
+                    text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:3px;">Relator</div>
+        <div style="font-family:Arial,sans-serif;font-size:13px;">${relVal}</div>
       </div>
     </div>
   </div>`;
 
   return `<div class="inf-card">${infoBar}${destaqueHTML}${casoHTML}${entHTML}${tesHTML}${footHTML}</div>`;
 }
-
 
 // ═══════════════════ CÓDIGO HTML ═══════════════════
 function genCodigo(){
