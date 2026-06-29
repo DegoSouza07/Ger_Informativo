@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Informativo de Julgamento — TCE-PE</title>
 <link href="https://fonts.googleapis.com/css2?family=Georgia&family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 /* ═══ TOKENS ═══ */
 :root {
@@ -618,7 +619,7 @@ body{font-family:var(--fonte);background:#EAECF2;color:var(--texto);min-height:1
 <div id="app-bar">
   <span class="app-name">TCE-PE · Gerador de Informativos</span>
   <div class="spacer"></div>
-  <button class="btn-pdf" onclick="window.print()">🖨 Exportar PDF</button>
+  <button class="btn-pdf" id="btn-pdf" onclick="downloadPDF()">⬇ Baixar PDF</button>
 </div>
 
 <!-- LAYOUT -->
@@ -1037,9 +1038,9 @@ function buildEmailHTML(){
       <tr>
         <td style="background-color:#0F2C59;padding:14px 22px;border-top:1px solid rgba(255,255,255,0.08);border-radius:0 0 10px 10px;">
           <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:10px;text-align:center;line-height:1.7;">
-            <strong style="color:#FFFFFF;">Tribunal de Contas do Estado de Pernambuco — TCE-PE</strong><br>
+            <strong style="color:#FFFFFF;">Diretoria de Julgamento</strong><br>
             <span style="color:rgba(255,255,255,0.60);">Informativo de Julgamento nº ${esc(num)}/${esc(ano)}${data ? " · " + esc(data) : ""}</span><br>
-            <span style="color:rgba(255,255,255,0.35);font-size:9px;">Este informativo tem caráter meramente informativo e não substitui o inteiro teor dos acórdãos.</span>
+            <span style="color:rgba(255,255,255,0.35);font-size:9px;">Esta comunicação tem caráter meramente informativo e não substitui o inteiro teor dos acórdãos.</span>
           </p>
         </td>
       </tr>
@@ -1055,32 +1056,17 @@ function buildEmailCard(dec){
   const num  = document.getElementById("f-num").value || "1";
   const data = fmtData(document.getElementById("f-data").value);
 
-  /* ── BARRA DE INFO: "Informativo Nº X · data" + "Colegiado · Sessão" ── */
-  const infoBarHTML = `
+  /* ── BARRA DE INFO: Colegiado · Sessão ── */
+  const infoBarHTML = (dec.colegiado || dec.sessao) ? `
   <tr>
     <td style="background-color:#F4F6FA;padding:9px 20px;border-bottom:1px solid #E2E6EF;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
-        style="border-collapse:collapse;">
-        <tr>
-          <!-- Esquerda: Informativo Nº X · data -->
-          <td valign="middle">
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;font-weight:600;color:#374151;line-height:1;">
-             <span style="color:#0F2C59;font-weight:700;">Informativo Nº ${esc(num)}</span>${data ? `&nbsp;·&nbsp;<span style="color:#6B7280;">${esc(data)}</span>` : ""}
-            </p>
-          </td>
-          <!-- Direita: Colegiado · Sessão -->
-          ${(dec.colegiado || dec.sessao) ? `
-          <td valign="middle" align="right">
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:#6B7280;line-height:1;">
-              ${dec.colegiado ? `<span style="color:#0F2C59;font-weight:700;">✦&nbsp;${esc(dec.colegiado)}</span>` : ""}
-              ${dec.colegiado && dec.sessao ? "&nbsp;·&nbsp;" : ""}
-              ${dec.sessao ? esc(dec.sessao) : ""}
-            </p>
-          </td>` : ""}
-        </tr>
-      </table>
+      <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:#6B7280;line-height:1;">
+        ${dec.colegiado ? `<span style="color:#0F2C59;font-weight:700;">✦&nbsp;${esc(dec.colegiado)}</span>` : ""}
+        ${dec.colegiado && dec.sessao ? "&nbsp;·&nbsp;" : ""}
+        ${dec.sessao ? esc(dec.sessao) : ""}
+      </p>
     </td>
-  </tr>`;
+  </tr>` : "";
 
   /* ── DESTAQUE ── */
   const destaqueHTML = dec.destaque ? `
@@ -1252,9 +1238,9 @@ function buildHTML(){
 
   <!-- RODAPÉ -->
   <div class="inf-footer">
-    <strong>Tribunal de Contas do Estado de Pernambuco — TCE-PE</strong><br>
+    <strong>Diretoria de Julgamento</strong><br>
     Informativo de Julgamento nº ${esc(num)}/${esc(ano)}${data ? " · " + esc(data) : ""}<br>
-    Este informativo tem caráter meramente informativo e não substitui o inteiro teor dos acórdãos.
+    Esta comunicação tem caráter meramente informativo e não substitui o inteiro teor dos acórdãos.
   </div>
 </div>`;
 }
@@ -1273,27 +1259,20 @@ function buildCard(dec){
 
   /* ────────────────────────────────────────────────
      BARRA INFO — fundo branco, ícones coloridos
-     Esquerda: 🗓 laranja · "Informativo  Nº X · data"
-     Direita:  ⚡ amarelo · "Colegiado · Sessão"
+     Colegiado · Sessão
   ──────────────────────────────────────────────── */
-  const infoBar = `
+  const infoBar = (dec.colegiado||dec.sessao) ? `
   <div style="background:#FFFFFF;border-bottom:1px solid #E5E7EB;
               padding:10px 20px;display:flex;align-items:center;
-              justify-content:space-between;flex-wrap:wrap;gap:6px;">
-    <span style="display:inline-flex;align-items:center;gap:6px;
-                 font-family:Arial,sans-serif;font-size:12px;color:#4B5563;">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="#E07000"><path d="M17 2h-1V1h-1.5v1h-5V1H8v1H7C5.35 2 4 3.35 4 5v14c0 1.65 1.35 3 3 3h10c1.65 0 3-1.35 3-3V5c0-1.65-1.35-3-3-3zm1.5 17c0 .83-.67 1.5-1.5 1.5H7c-.83 0-1.5-.67-1.5-1.5V9h13v10z"/></svg>
-      <span><strong style="color:#1F2937;font-weight:700;">Informativo&nbsp;&nbsp;Nº&nbsp;${esc(num)}</strong>${data ? `<span style="color:#9CA3AF;">&nbsp;·&nbsp;</span><span style="color:#6B7280;">${esc(data)}</span>` : ""}</span>
-    </span>
-    ${(dec.colegiado||dec.sessao) ? `
+              flex-wrap:wrap;gap:6px;">
     <span style="display:inline-flex;align-items:center;gap:6px;
                  font-family:Arial,sans-serif;font-size:12px;color:#6B7280;">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="#D4A017"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
       ${dec.colegiado ? `<strong style="color:#1F2937;font-weight:700;">${esc(dec.colegiado)}</strong>` : ""}
       ${dec.colegiado && dec.sessao ? `<span style="color:#9CA3AF;">·</span>` : ""}
       ${dec.sessao ? `<span>${esc(dec.sessao)}</span>` : ""}
-    </span>` : ""}
-  </div>`;
+    </span>
+  </div>` : "";
 
   /* ────────────────────────────────────────────────
      DESTAQUE
@@ -1498,6 +1477,59 @@ function copyHTML(){
     btn.textContent = "✅ Copiado!";
     setTimeout(() => btn.textContent = orig, 2000);
   }).catch(() => document.execCommand("copy"));
+}
+
+// ═══════════════════ DOWNLOAD PDF ═══════════════════
+function downloadPDF(){
+  if(!decisoes.length){
+    alert("Adicione ao menos uma decisão para gerar o PDF.");
+    return;
+  }
+
+  const num = document.getElementById("f-num").value || "1";
+  const ano = document.getElementById("f-ano").value || "2026";
+
+  const btn = document.getElementById("btn-pdf");
+  const orig = btn.textContent;
+  btn.textContent = "⏳ Gerando...";
+  btn.disabled = true;
+
+  // Cria elemento temporário com o conteúdo do informativo
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = "width:794px;background:#EAECF2;padding:20px;font-family:Arial,sans-serif;";
+
+  // Copia os estilos da página
+  const styleEl = document.createElement("style");
+  styleEl.textContent = Array.from(document.querySelectorAll("style")).map(s => s.textContent).join("\n");
+  wrapper.appendChild(styleEl);
+
+  const content = document.createElement("div");
+  content.innerHTML = buildHTML();
+  wrapper.appendChild(content);
+
+  document.body.appendChild(wrapper);
+
+  const opt = {
+    margin: 0,
+    filename: `Informativo_Julgamento_n${num}_${ano}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: "#EAECF2" },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+  };
+
+  html2pdf().set(opt).from(wrapper).save()
+    .then(() => {
+      document.body.removeChild(wrapper);
+      btn.textContent = orig;
+      btn.disabled = false;
+    })
+    .catch(err => {
+      console.error("Erro ao gerar PDF:", err);
+      document.body.removeChild(wrapper);
+      btn.textContent = orig;
+      btn.disabled = false;
+      alert("Erro ao gerar o PDF. Tente novamente.");
+    });
 }
 
 // ═══════════════════ ISOLAMENTO Ctrl+A no e-mail ═══════════════════
