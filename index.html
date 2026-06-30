@@ -315,10 +315,11 @@ body{font-family:var(--fonte);background:#EAECF2;color:var(--texto);min-height:1
   background:#EEF0F5;
   min-height:80px;
   transition:border-color .2s;
+  box-shadow: none !important;
 }
 #prev-email:focus{
   border-color:#3B6CC5;
-  box-shadow:0 0 0 3px rgba(59,108,197,.10);
+  box-shadow:none !important;
 }
 
 /* empty state */
@@ -999,8 +1000,8 @@ function buildEmailHTML(){
 <tr>
   <td align="center" style="padding:16px 8px;background-color:#EEF0F5;">
 
-    <table role="presentation" class="wrap" width="600" cellpadding="0" cellspacing="0" border="0"
-      style="width:690px;max-width:690px;border-collapse:collapse;
+    <table role="presentation" class="wrap" width="680" cellpadding="0" cellspacing="0" border="0"
+      style="width:680px;max-width:680px;border-collapse:collapse; 
              font-family:Arial,Helvetica,sans-serif;
              mso-table-lspace:0;mso-table-rspace:0;">
 
@@ -1020,7 +1021,7 @@ function buildEmailHTML(){
               <td valign="middle" style="padding-left:16px;">
                 <p style="margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:400;color:rgba(255,255,255,0.70);line-height:1;">Informativo de</p>
                 <p class="jname" style="margin:0;font-family:Arial,'Times New Roman',serif;font-size:30px;font-weight:700;color:#FFFFFF;line-height:1;letter-spacing:-0.3px;">Julgamento</p>
-                <p style="margin:5px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:8px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.38);line-height:1;">Diretoria de Julgamento</p>
+                <p style="margin:5px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:8px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.38);line-height:1;"></p>
               </td>
               <td valign="middle" align="right" style="padding-left:8px;white-space:nowrap;">
                 ${colBanner ? `<p style="margin:0 0 3px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#FFB100;line-height:1;">${esc(colBanner)}</p>` : ""}
@@ -1038,8 +1039,8 @@ function buildEmailHTML(){
         <td style="background-color:#0F2C59;padding:14px 22px;border-top:1px solid rgba(255,255,255,0.08);border-radius:0 0 10px 10px;">
           <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:10px;text-align:center;line-height:1.7;">
             <strong style="color:#FFFFFF;">Tribunal de Contas do Estado de Pernambuco — TCE-PE</strong><br>
-            <span style="color:rgba(255,255,255,0.60);">Informativo de Julgamento nº ${esc(num)}/${esc(ano)}${data ? " · " + esc(data) : ""}</span><br>
-            <span style="color:rgba(255,255,255,0.35);font-size:9px;">Este informativo tem caráter meramente informativo e não substitui o inteiro teor dos acórdãos.</span>
+            <span style="color:rgba(255,255,255,0.60);">Diretoria de Julgamento </span><br>
+            <span style="color:rgba(255,255,255,0.35);font-size:9px;">Esta comunicação tem caráter meramente informativo e não substitui o inteiro teor dos acórdãos.</span>
           </p>
         </td>
       </tr>
@@ -1068,12 +1069,10 @@ function buildEmailCard(dec){
              <span style="color:#0F2C59;font-weight:700;">Informativo Nº ${esc(num)}</span>${data ? `&nbsp;·&nbsp;<span style="color:#6B7280;">${esc(data)}</span>` : ""}
             </p>
           </td>
-          <!-- Direita: Colegiado · Sessão -->
-          ${(dec.colegiado || dec.sessao) ? `
+           <!-- Direita: Sessão -->
+          ${dec.sessao ? `
           <td valign="middle" align="right">
             <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:#6B7280;line-height:1;">
-              ${dec.colegiado ? `<span style="color:#0F2C59;font-weight:700;">✦&nbsp;${esc(dec.colegiado)}</span>` : ""}
-              ${dec.colegiado && dec.sessao ? "&nbsp;·&nbsp;" : ""}
               ${dec.sessao ? esc(dec.sessao) : ""}
             </p>
           </td>` : ""}
